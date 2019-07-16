@@ -35,6 +35,8 @@ public class CreateServlet extends HttpServlet {
         if(_token != null && _token.equals(request.getSession().getId())) {
             EntityManager em = DButil.createEntityManager();
 
+
+            //データベースへ記録
             Task m = new Task();
 
             String content = request.getParameter("content");
@@ -49,6 +51,8 @@ public class CreateServlet extends HttpServlet {
             em.getTransaction().commit();
             em.close();
 
+
+            //indexへ遷移
             response.sendRedirect(request.getContextPath() + "/index");
         }
     }
