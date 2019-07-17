@@ -18,35 +18,37 @@ import utils.DButil;
  */
 @WebServlet("/edit")
 public class EditServlet extends HttpServlet {
-    private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-    /**
-     * @see HttpServlet#HttpServlet()
-     */
-    public EditServlet() {
-        super();
-        // TODO Auto-generated constructor stub
-    }
+	/**
+	 * @see HttpServlet#HttpServlet()
+	 */
+	public EditServlet() {
+		super();
+		// TODO Auto-generated constructor stub
+	}
 
-    /**
-     * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
-     */
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        EntityManager em = DButil.createEntityManager();
+	/**
+	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		EntityManager em = DButil.createEntityManager();
 
-        // 該当のIDのタスク1件のみをデータベースから取得
-        Task m = em.find(Task.class, Integer.parseInt(request.getParameter("id")));
+		// 該当のIDのタスク1件のみをデータベースから取得
+		Task m = em.find(Task.class, Integer.parseInt(request.getParameter("id")));
 
-        em.close();
+		em.close();
 
-        // タスク情報とセッションIDをリクエストスコープに登録
-        request.setAttribute("task", m);
-        request.setAttribute("_token", request.getSession().getId());
+		// タスク情報とセッションIDをリクエストスコープに登録
+		request.setAttribute("task", m);
+		request.setAttribute("_token", request.getSession().getId());
 
-        // タスクIDをセッションスコープに登録
-        request.getSession().setAttribute("task_id", m.getId());
-
-        RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/edit.jsp");
-        rd.forward(request, response);
-    }
+		//データが存在しているときのみ
+		// タスクIDをセッションスコープに登録
+		if(m != null) {
+			request.getSession().setAttribute("task_id", m.getId());
+		}
+		RequestDispatcher rd = request.getRequestDispatcher("/WEB-INF/views/tasks/edit.jsp");
+		rd.forward(request, response);
+	}
 }
